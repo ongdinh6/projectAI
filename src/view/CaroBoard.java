@@ -132,9 +132,9 @@ public class CaroBoard extends JFrame {
 										test.run();
 										return;
 									}
-									bGame.minimax1(1, bGame.board, true);
-//									pointX = bGame.getOptimalPosition(1, bGame.updateBoard(player, r, c),true);
-									pointX = bGame.getPoint();
+//									bGame.minimax(2, bGame.board, false);
+//									pointX = bGame.getPoint();
+									pointX = bGame.moveOn(player.getPlayer());
 									System.out.println(pointX.x +"::pointX:"+pointX.y);
 									
 
@@ -143,7 +143,6 @@ public class CaroBoard extends JFrame {
 											for (int j = 0; j < board.length; j++) {
 												if (i == pointX.x && j == pointX.y) {
 													board[i][j].setText("X");
-													player.setPlayer(2);
 
 													if (checkWin(i, j) == true) {
 														if (turn == false) {
@@ -159,6 +158,8 @@ public class CaroBoard extends JFrame {
 														return;
 													}
 													bo = bGame.updateBoard(player, i, j);
+													player.setPlayer(2);
+
 													turn = true;
 												}
 											}

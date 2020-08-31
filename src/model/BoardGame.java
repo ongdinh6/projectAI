@@ -15,6 +15,7 @@ public class BoardGame {
 	public ArrayList<Point> listMin = null;
 	int maxDepth = 2;
 	int minDepth = 0;
+	int _x, _y;
 
 	public Point getPoint() {
 		return point;
@@ -345,133 +346,118 @@ public class BoardGame {
 		return boardClone;
 	}
 
-	public int minimax1(int depth, int[][] board, boolean minmax) {
+	public int minimax(int depth, int[][] board, boolean turn, int alpha, int beta) {
 		Player player = new Player();
 		int hang = 0;
 		int cot = 0;
 		boolean isTimThay = false;
 
 		if (depth == 0) {
-			this.point = d0(board);
-			return getScore(board, false, player) - getScore(board, true, player);
-		}
-		if (minmax == true) { // xet node max, le
-			int tempmax = Integer.MIN_VALUE;
+			int sc = 0;
+			int max = getScore(board, false, player) - getScore(board, true, player);
 			for (int i = 0; i < board.length; i++) {
 				for (int j = 0; j < board.length; j++) {
 					if (board[i][j] == 0) {
-						int[][] boardThuGan = clone(board);
-						boardThuGan[i][j] = 1;
-						int max = minimax1(depth - 1, boardThuGan, false);
-						if (tempmax < max) {
-							tempmax = max;
+						int[][] cloneboard = clone(board);
+						cloneboard[i][j] = 1;
+						sc = getScore(cloneboard, false, player) - getScore(cloneboard, true, player);
+						if (max < sc) {
+							max = sc;
 							hang = i;
 							cot = j;
 							isTimThay = true;
+							setPoint(new Point(hang, cot));
 						}
 					}
 				}
 			}
 			if (isTimThay == true) {
-				this.point = new Point(hang, cot);
-				board[hang][cot] = 1;
-//				this.point = getOptimalPosition(depth, board, minmax);
+				return max;
+			} else {
+				hang = 0;
+				cot = 0;
 			}
-			return tempmax;
-		} else { // xet node min, chan
-			int tempmin = Integer.MAX_VALUE;
-			for (int i = 0; i < board.length; i++) {
-				for (int j = 0; j < board.length; j++) {
-					if (board[i][j] == 0) {
-						int[][] boardThuGan = clone(board);
-						boardThuGan[i][j] = 2;
-						int min = minimax1(depth - 1, boardThuGan, true);
-
-						if (tempmin > min) {
-							System.out.println("min:" + min);
-							tempmin = min;
-							hang = i;
-							cot = j;
-							isTimThay = true;
-						}
-					}
-				}
-			}
-			if (isTimThay == true) {
-				board[hang][cot] = 1;
-				this.point = new Point(hang, cot);
-//				this.point = getOptimalPosition(depth, board, minmax);
-			}
-			return tempmin;
-
-		}
-	}
-
-	public Point getOptimalPosition(int depth, int[][] board, boolean minmax) {
-		boolean isTrue = false;
-		Point p = new Point();
-		int hang = 0;
-		int cot = 0;
-		int optimalScore = minimax1(depth, board, minmax);
-		for (int i = 0; i < board.length; i++) {
-			for (int j = 0; j < board[i].length; j++) {
-				if (board[i][j] == optimalScore) {
-					hang = i;
-					cot = j;
-					isTrue = true;
-				}
-			}
-		}
-		if (isTrue == true) {
-//			board[hang][cot] = 1;
-			p = new Point(hang, cot);
-		}
-		return p;
-
-	}
-
-	public Point d0(int[][] board) {
-		Point po = new Point();
-		Player player = new Player();
-		ArrayList<int[][]> listBoard = new ArrayList<int[][]>();
-		int[][] bct = new int[row][col];
-		int[][] boardThuGan = new int[row][col];
-		for (int i = 0; i < boardThuGan.length; i++) {
-			for (int j = 0; j < boardThuGan.length; j++) {
-				boardThuGan[i][j] = board[i][j];
-			}
-		}
-		int sc = 0;
-		boolean isTimThay = false;
-		int max = getScore(board, false, player) - getScore(board, true, player);
-		int hang = 0, cot = 0;
-		for (int i = 0; i < boardThuGan.length; i++) {
-			for (int j = 0; j < boardThuGan.length; j++) {
-				if (boardThuGan[i][j] == 0) {
-					boardThuGan[i][j] = 1;
-					sc = getScore(boardThuGan, false, player) - getScore(boardThuGan, true, player);
-					if (max < sc) {
-						max = sc;
-						hang = i;
-						cot = j;
-						boardThuGan[i][j] = 0;
-						isTimThay = true;
-					} else {
-						boardThuGan[i][j] = 0;
-					}
-				}
-			}
-
-		}
-		if (isTimThay == true) {
-			board[hang][cot] = 1;
-			po = new Point(hang, cot);
 		} else {
-			hang = 0;
-			cot = 0;
-		}
-		return po;
+			if (turn == true) { // isCheckMin le
+				int tempmin = Integer.MIN_VALUE;
+				int sc = -1;
+				for (int i = 0; i < board.length; i++) {
+					for (int j = 0; j < board.length; j++) {
+						if (board[i][j] == 0) {
+							int[][] cloneboard = clone(board);
+							cloneboard[i][j] = 2;
 
+							int min = minimax(depth - 1, cloneboard, false, alpha, beta);
+							if (tempmin < min) {
+								tempmin = min;
+								sc = tempmin;
+								hang = i;
+								cot = j;
+								isTimThay = true;
+//								setPoint(new Point(hang, cot));
+							}
+						}
+						if(sc <= alpha){
+							setPoint(new Point(hang, cot));
+							return sc;
+						}
+						beta = Math.min(beta, sc);
+					}
+				}
+				
+				if (isTimThay == true) {
+					return sc;
+				}
+			} else { // is CheckMax chan
+				int tempmax = Integer.MAX_VALUE;
+				int sc = -1;
+				for (int i = 0; i < board.length; i++) {
+					for (int j = 0; j < board.length; j++) {
+						if (board[i][j] == 0) {
+							int[][] cloneboard = clone(board);
+							cloneboard[i][j] = 1;
+							int max = minimax(depth - 1, cloneboard, true, alpha, beta);
+							if (tempmax > max) {
+								tempmax = max;
+								sc = tempmax;
+								hang = i;
+								cot = j;
+								isTimThay = true;						
+//								setPoint(new Point(hang, cot));
+							}
+						}
+						if(sc >= beta){
+							setPoint(new Point(hang, cot));
+							return sc;
+							
+						}
+						alpha = Math.max(alpha, sc);
+					}
+				}
+				
+				if (isTimThay == true) {
+					return sc;
+				}
+			}
+		}
+		return -1;
+	}
+	
+	public void alphabeta(int alpha, int beta, int depth,int[][] board, int player) {
+		if(player == 2) {
+			minimax(depth, board, true, alpha, beta);
+		}else {
+			minimax(depth, board, false, alpha, beta);
+		}
+	}
+	public Point moveOn(int player) {
+		alphabeta(0, 1, 2, board, player);
+		Point temp = getPoint();
+		if (temp != null) {
+			_x = temp.x;
+			_y = temp.y;
+		}
+		return new Point(_x, _y);
 	}
 
 }
