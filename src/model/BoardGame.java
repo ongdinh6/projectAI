@@ -6,8 +6,8 @@ import java.util.ArrayList;
 public class BoardGame {
 	private static final Player Player = null;
 	public int[][] board;
-	public int row = 6;
-	public int col = 6;
+	public int row = 15;
+	public int col = 15;
 	public int size = 15;
 	private Point point;
 	public int evaluationBoard = 0;

@@ -34,7 +34,7 @@ public class CaroBoard extends JFrame {
 	int scorePlayer = 0;
 	boolean turn = false;
 	Point pointForX;
-	public static final int soquanwin = 3 ;
+	public static final int soquanwin = 4;
 
 	public JButton[][] getBoard() {
 		return board;
@@ -132,7 +132,7 @@ public class CaroBoard extends JFrame {
 										test.run();
 										return;
 									}
-									bGame.minimax1(4, bGame.board, false);
+									bGame.minimax1(2, bGame.board, false);
 //									pointX = bGame.getOptimalPosition(1, bGame.updateBoard(player, r, c),true);
 									pointX = bGame.getPoint();
 									System.out.println(pointX.x +"::pointX:"+pointX.y);
