@@ -132,7 +132,7 @@ public class CaroBoard extends JFrame {
 										test.run();
 										return;
 									}
-									bGame.minimax1(2, bGame.board, false);
+									bGame.minimax1(1, bGame.board, true);
 //									pointX = bGame.getOptimalPosition(1, bGame.updateBoard(player, r, c),true);
 									pointX = bGame.getPoint();
 									System.out.println(pointX.x +"::pointX:"+pointX.y);
