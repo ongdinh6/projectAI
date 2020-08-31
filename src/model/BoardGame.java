@@ -10,11 +10,6 @@ public class BoardGame {
 	public int col = 15;
 	public int size = 15;
 	private Point point;
-	public int evaluationBoard = 0;
-	public ArrayList<Point> listMax = new ArrayList<Point>();
-	public ArrayList<Point> listMin = null;
-	int maxDepth = 2;
-	int minDepth = 0;
 
 	public Point getPoint() {
 		return point;
@@ -139,7 +134,7 @@ public class BoardGame {
 					} else {
 						blocks = 1;
 					}
-				} else if (demlientiep > 0) { // gáº·p Ă´ bá»‹ cháº·n
+				} else if (demlientiep > 0) { 
 					score += getConsecutiveSetScore(demlientiep, blocks, luot == nguoichoi);
 					demlientiep = 0;
 					blocks = 2;
@@ -212,7 +207,7 @@ public class BoardGame {
 		} else {
 			nguoichoi = false;
 		}
-		// Duong cheo len
+		// Ä�uong cheo len
 		for (int k = 0; k <= 2 * (board.length - 1); k++) {
 			int iStart = Math.max(0, k - board.length + 1);
 			int iEnd = Math.min(board.length - 1, k);
@@ -246,13 +241,12 @@ public class BoardGame {
 			demlientiep = 0;
 			blocks = 2;
 		}
-		// Duong cheo xuong
+		// Ä�uong cheo xuong
 		for (int k = 1 - board.length; k < board.length; k++) {
 			int iStart = Math.max(0, k);
 			int iEnd = Math.min(board.length + k - 1, board.length - 1);
 			for (int i = iStart; i <= iEnd; ++i) {
 				int j = i - k;
-
 				if (board[i][j] == (luot ? 2 : 1)) {
 					demlientiep++;
 				} else if (board[i][j] == 0) {
@@ -271,7 +265,6 @@ public class BoardGame {
 				} else {
 					blocks = 2;
 				}
-
 			}
 			if (demlientiep > 0) {
 				score += getConsecutiveSetScore(demlientiep, blocks, luot == nguoichoi);
@@ -294,10 +287,10 @@ public class BoardGame {
 		case 4: {
 			// 4 con lien tiep
 			if (currentTurn) // luot minh
-				return 3000;
+				return 800;
 			else {// luot cua o
 				if (blocks == 0)// khong bi chan
-					return 2000;
+					return 600;
 				else
 					return 300;
 			}
@@ -306,9 +299,9 @@ public class BoardGame {
 			// 3 con lien tiep
 			if (blocks == 0) {// khong bi chan
 				if (currentTurn)// luot minh
-					return 1000;
+					return 500;
 				else
-					return 600;
+					return 200;
 			} else {
 				// Bi chan
 				if (currentTurn)// luot minh
@@ -335,103 +328,7 @@ public class BoardGame {
 		return 1000;
 	}
 
-	public int[][] clone(int[][] board) {
-		int[][] boardClone = new int[row][col];
-		for (int i = 0; i < boardClone.length; i++) {
-			for (int j = 0; j < boardClone.length; j++) {
-				boardClone[i][j] = board[i][j];
-			}
-		}
-		return boardClone;
-	}
-
-	public int minimax1(int depth, int[][] board, boolean minmax) {
-		Player player = new Player();
-		int hang = 0;
-		int cot = 0;
-		boolean isTimThay = false;
-
-		if (depth == 0) {
-			this.point = d0(board);
-			return getScore(board, false, player) - getScore(board, true, player);
-		}
-		if (minmax == true) { // xet node max, le
-			int tempmax = Integer.MIN_VALUE;
-			for (int i = 0; i < board.length; i++) {
-				for (int j = 0; j < board.length; j++) {
-					if (board[i][j] == 0) {
-						int[][] boardThuGan = clone(board);
-						boardThuGan[i][j] = 1;
-						int max = minimax1(depth - 1, boardThuGan, false);
-						if (tempmax < max) {
-							tempmax = max;
-							hang = i;
-							cot = j;
-							isTimThay = true;
-						}
-					}
-				}
-			}
-			if (isTimThay == true) {
-				this.point = new Point(hang, cot);
-				board[hang][cot] = 1;
-//				this.point = getOptimalPosition(depth, board, minmax);
-			}
-			return tempmax;
-		} else { // xet node min, chan
-			int tempmin = Integer.MAX_VALUE;
-			for (int i = 0; i < board.length; i++) {
-				for (int j = 0; j < board.length; j++) {
-					if (board[i][j] == 0) {
-						int[][] boardThuGan = clone(board);
-						boardThuGan[i][j] = 2;
-						int min = minimax1(depth - 1, boardThuGan, true);
-
-						if (tempmin > min) {
-							System.out.println("min:" + min);
-							tempmin = min;
-							hang = i;
-							cot = j;
-							isTimThay = true;
-						}
-					}
-				}
-			}
-			if (isTimThay == true) {
-				board[hang][cot] = 1;
-				this.point = new Point(hang, cot);
-//				this.point = getOptimalPosition(depth, board, minmax);
-			}
-			return tempmin;
-
-		}
-	}
-
-	public Point getOptimalPosition(int depth, int[][] board, boolean minmax) {
-		boolean isTrue = false;
-		Point p = new Point();
-		int hang = 0;
-		int cot = 0;
-		int optimalScore = minimax1(depth, board, minmax);
-		for (int i = 0; i < board.length; i++) {
-			for (int j = 0; j < board[i].length; j++) {
-				if (board[i][j] == optimalScore) {
-					hang = i;
-					cot = j;
-					isTrue = true;
-				}
-			}
-		}
-		if (isTrue == true) {
-//			board[hang][cot] = 1;
-			p = new Point(hang, cot);
-		}
-		return p;
-
-	}
-
-	public Point d0(int[][] board) {
-		Point po = new Point();
+	public int minimax(int depth, int[][] board) {
 		Player player = new Player();
 		ArrayList<int[][]> listBoard = new ArrayList<int[][]>();
 		int[][] bct = new int[row][col];
@@ -464,13 +361,14 @@ public class BoardGame {
 
 		}
 		if (isTimThay == true) {
-			board[hang][cot] = 1;
-			po = new Point(hang, cot);
-		} else {
+			listBoard.add(updateBoard(player, hang, cot));
+			this.point = new Point(hang, cot);
+		} 
+		else {
 			hang = 0;
 			cot = 0;
 		}
-		return po;
+		return sc;
 
 	}
 

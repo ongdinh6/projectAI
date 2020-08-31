@@ -34,7 +34,6 @@ public class CaroBoard extends JFrame {
 	int scorePlayer = 0;
 	boolean turn = false;
 	Point pointForX;
-	public static final int soquanwin = 4;
 
 	public JButton[][] getBoard() {
 		return board;
@@ -78,13 +77,6 @@ public class CaroBoard extends JFrame {
 				JButton bb = btn;
 
 				bb.setText(null);
-				if (bGame.row == 3 && x == 0 && y == 0) {
-					bGame.updateBoard(player, x, y);
-					bb.setText("X");
-					player.setPlayer(2);
-					turn = true;
-				}
-				
 				if (x == 7 && y == 7) {
 					bb.setText("X");
 					bGame.updateBoard(player, x, y);
@@ -105,6 +97,7 @@ public class CaroBoard extends JFrame {
 							boolean isValid = false;
 							boolean isDaCo = false;
 							Point pointX = null;
+							int nuoc = 0;
 							int[][] bo = new int[r][c];
 							if (point.x == r && point.y == c) {
 								isValid = true;
@@ -117,11 +110,14 @@ public class CaroBoard extends JFrame {
 											+ bGame.getScore(bGame.updateBoard(player, r, c), true, player));
 									click2 = false;
 									System.out.println("P2: " + r + ":" + c);
-
 									player.setPlayer(1);
 									turn = false;
+									nuoc++;
 
-									if (checkWin(r, c) == true) {
+									System.out.print("boardGoiY" + bGame.minimax(1, bGame.updateBoard(player, r, c)));
+
+									//
+									if (checkWin(r, c)) {
 										String str = "Player win !";
 										JOptionPane.showMessageDialog(null, str);
 										Window w = SwingUtilities.getWindowAncestor(bb);
@@ -132,17 +128,18 @@ public class CaroBoard extends JFrame {
 										test.run();
 										return;
 									}
-									bGame.minimax1(2, bGame.board, false);
-//									pointX = bGame.getOptimalPosition(1, bGame.updateBoard(player, r, c),true);
+								
+
 									pointX = bGame.getPoint();
-									System.out.println(pointX.x +"::pointX:"+pointX.y);
-									
 
 									if (turn == false) {
 										for (int i = 0; i < board.length; i++) {
 											for (int j = 0; j < board.length; j++) {
 												if (i == pointX.x && j == pointX.y) {
 													board[i][j].setText("X");
+
+//												System.out.println("Score of AI:" + bGame
+//														.getScore(bGame.updateBoard(player, i, j), false, 1));
 													player.setPlayer(2);
 
 													if (checkWin(i, j) == true) {
@@ -164,6 +161,7 @@ public class CaroBoard extends JFrame {
 											}
 										}
 									}
+									//
 								}
 							}
 						}
@@ -213,7 +211,7 @@ public class CaroBoard extends JFrame {
 			d++;
 			k--;
 		}
-		if (d > soquanwin)
+		if (d > 4)
 			return true;
 		d = 0;
 		h = j;
@@ -241,7 +239,7 @@ public class CaroBoard extends JFrame {
 				break;
 			}
 		}
-		if (d > soquanwin)
+		if (d > 4)
 			return true;
 		// kiá»ƒm tra Ä‘Æ°á»�ng chĂ©o 1
 		h = i;
@@ -269,10 +267,10 @@ public class CaroBoard extends JFrame {
 				break;
 			}
 		}
-		if (d > soquanwin)
+		if (d > 4)
 			return true;
 
-		h = i;// 
+//		h = i;// 
 		k = j;//
 		d = 0;
 		if (i == bGame.col - 1) {
@@ -308,7 +306,7 @@ public class CaroBoard extends JFrame {
 			}
 		}
 
-		if (d > soquanwin)
+		if (d > 4)
 			return true;
 
 		// náº¿u khĂ´ng Ä‘Æ°Æ¡ng chĂ©o nĂ o thá»�a mĂ£n thĂ¬
