@@ -15,7 +15,7 @@ public class BoardGame {
 	public ArrayList<Point> listMin = null;
 	int maxDepth = 2;
 	int minDepth = 0;
-	int _x, _y;
+	int ai_x, ai_y;
 
 	public Point getPoint() {
 		return point;
@@ -394,20 +394,16 @@ public class BoardGame {
 								hang = i;
 								cot = j;
 								isTimThay = true;
-//								setPoint(new Point(hang, cot));
+								if (sc < alpha) {
+									setPoint(new Point(hang, cot));
+								}
+								beta = Math.min(beta, sc);
+								return beta;
 							}
 						}
-						if(sc <= alpha){
-							setPoint(new Point(hang, cot));
-							return sc;
-						}
-						beta = Math.min(beta, sc);
 					}
 				}
-				
-				if (isTimThay == true) {
-					return sc;
-				}
+
 			} else { // is CheckMax chan
 				int tempmax = Integer.MAX_VALUE;
 				int sc = -1;
@@ -422,42 +418,39 @@ public class BoardGame {
 								sc = tempmax;
 								hang = i;
 								cot = j;
-								isTimThay = true;						
-//								setPoint(new Point(hang, cot));
+								isTimThay = true;
+								if (sc > beta) {
+									setPoint(new Point(hang, cot));
+								}
+								alpha = Math.max(alpha, sc);
+								return alpha;
 							}
 						}
-						if(sc >= beta){
-							setPoint(new Point(hang, cot));
-							return sc;
-							
-						}
-						alpha = Math.max(alpha, sc);
+
 					}
 				}
-				
-				if (isTimThay == true) {
-					return sc;
-				}
+
 			}
 		}
 		return -1;
 	}
-	
-	public void alphabeta(int alpha, int beta, int depth,int[][] board, int player) {
-		if(player == 2) {
+
+	public void alphabeta(int alpha, int beta, int depth, int[][] board, int player) {
+		if (depth % 3 == 0 || depth != 0 || depth != 1) {
 			minimax(depth, board, true, alpha, beta);
-		}else {
+		} else { // checkMax
 			minimax(depth, board, false, alpha, beta);
 		}
 	}
+
 	public Point moveOn(int player) {
-		alphabeta(0, 1, 2, board, player);
+		//alpha xet node max, beta xet node min
+		alphabeta(-10000, 10000, 5, board, player);
 		Point temp = getPoint();
 		if (temp != null) {
-			_x = temp.x;
-			_y = temp.y;
+			ai_x = temp.x;
+			ai_y = temp.y;
 		}
-		return new Point(_x, _y);
+		return new Point(ai_x, ai_y);
 	}
-
 }
