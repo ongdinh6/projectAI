@@ -387,22 +387,22 @@ public class BoardGame {
 							int[][] cloneboard = clone(board);
 							cloneboard[i][j] = 2;
 
-							int min = minimax(depth - 1, cloneboard, false, alpha, beta);
+							int min = minimax(depth - 1, cloneboard, true, alpha, beta);
 							if (tempmin < min) {
 								tempmin = min;
 								sc = tempmin;
 								hang = i;
 								cot = j;
 								isTimThay = true;
-								if (sc < alpha) {
+								if (sc <= alpha) {
 									setPoint(new Point(hang, cot));
 								}
 								beta = Math.min(beta, sc);
-								return beta;
 							}
 						}
 					}
 				}
+				return beta;
 
 			} else { // is CheckMax chan
 				int tempmax = Integer.MAX_VALUE;
@@ -412,23 +412,22 @@ public class BoardGame {
 						if (board[i][j] == 0) {
 							int[][] cloneboard = clone(board);
 							cloneboard[i][j] = 1;
-							int max = minimax(depth - 1, cloneboard, true, alpha, beta);
+							int max = minimax(depth - 1, cloneboard, false, alpha, beta);
 							if (tempmax > max) {
 								tempmax = max;
 								sc = tempmax;
 								hang = i;
 								cot = j;
 								isTimThay = true;
-								if (sc > beta) {
+								if (sc >= beta) {
 									setPoint(new Point(hang, cot));
 								}
 								alpha = Math.max(alpha, sc);
-								return alpha;
 							}
 						}
-
 					}
 				}
+				return alpha;
 
 			}
 		}
@@ -445,7 +444,7 @@ public class BoardGame {
 
 	public Point moveOn(int player) {
 		//alpha xet node max, beta xet node min
-		alphabeta(-10000, 10000, 5, board, player);
+		alphabeta(-10000, 10000, 2, board, player);
 		Point temp = getPoint();
 		if (temp != null) {
 			ai_x = temp.x;
