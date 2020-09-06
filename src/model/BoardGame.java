@@ -376,6 +376,7 @@ public class BoardGame {
 					
 				}
 			}
+<<<<<<< HEAD
 		}
 		return beta;
 
@@ -402,9 +403,70 @@ public class BoardGame {
 						if (sc >= beta) {
 							System.out.println("beta checkMax: " + beta);
 							setPoint(new Point(i, j));
+=======
+			if (isTimThay == true) {
+				return max;
+			} else {
+				hang = 0;
+				cot = 0;
+			}
+		} else {
+			if (turn == true) { // isCheckMin le
+				int tempmin = Integer.MIN_VALUE;
+				int sc = -1;
+				for (int i = 0; i < board.length; i++) {
+					for (int j = 0; j < board.length; j++) {
+						if (board[i][j] == 0) {
+							int[][] cloneboard = clone(board);
+							cloneboard[i][j] = 2;
+
+							int min = minimax(depth - 1, cloneboard, false, alpha, beta);
+							if (tempmin < min) {
+								tempmin = min;
+								sc = tempmin;
+								hang = i;
+								cot = j;
+								isTimThay = true;
+								if (sc < alpha) {
+									setPoint(new Point(hang, cot));
+								}
+								beta = Math.min(beta, sc);
+								return beta;
+							}
 						}
 					}
+				}
+
+			} else { // is CheckMax chan
+				int tempmax = Integer.MAX_VALUE;
+				int sc = -1;
+				for (int i = 0; i < board.length; i++) {
+					for (int j = 0; j < board.length; j++) {
+						if (board[i][j] == 0) {
+							int[][] cloneboard = clone(board);
+							cloneboard[i][j] = 1;
+							int max = minimax(depth - 1, cloneboard, true, alpha, beta);
+							if (tempmax > max) {
+								tempmax = max;
+								sc = tempmax;
+								hang = i;
+								cot = j;
+								isTimThay = true;
+								if (sc > beta) {
+									setPoint(new Point(hang, cot));
+								}
+								alpha = Math.max(alpha, sc);
+								return alpha;
+							}
+>>>>>>> parent of 8ca5a33... update03 minimax
+						}
+
+					}
+<<<<<<< HEAD
 					alpha = Math.max(alpha, sc);
+=======
+				}
+>>>>>>> parent of 8ca5a33... update03 minimax
 
 				}
 			}
@@ -423,8 +485,13 @@ public class BoardGame {
 	}
 
 	public Point moveOn(int player) {
+<<<<<<< HEAD
 		// alpha xet node max, beta xet node min
 		alphabeta(-10000, 10000, 1, board, player);
+=======
+		//alpha xet node max, beta xet node min
+		alphabeta(-10000, 10000, 5, board, player);
+>>>>>>> parent of 8ca5a33... update03 minimax
 		Point temp = getPoint();
 		if (temp != null) {
 			ai_x = temp.x;
