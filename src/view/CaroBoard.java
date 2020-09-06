@@ -134,6 +134,7 @@ public class CaroBoard extends JFrame {
 									}
 //									bGame.minimax(2, bGame.board, false);
 //									pointX = bGame.getPoint();
+									System.out.println(player.getPlayer());
 									pointX = bGame.moveOn(player.getPlayer());
 									System.out.println(pointX.x +"::pointX:"+pointX.y);
 									
@@ -299,7 +300,7 @@ public class CaroBoard extends JFrame {
 			if (k > bGame.col - 1) {
 				k = bGame.col - 1;
 			}
-		} // moithem+1
+		}
 		while (board[i][j].getText() == board[h][k].getText() && checkCorret(i, j)) {
 			d++;
 			h--;
@@ -312,8 +313,6 @@ public class CaroBoard extends JFrame {
 		if (d > soquanwin)
 			return true;
 
-		// náº¿u khĂ´ng Ä‘Æ°Æ¡ng chĂ©o nĂ o thá»�a mĂ£n thĂ¬
-		// tráº£ vá»� false.
 		return false;
 	}
 

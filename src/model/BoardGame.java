@@ -346,105 +346,85 @@ public class BoardGame {
 		return boardClone;
 	}
 
+	int count = 0;
+
 	public int minimax(int depth, int[][] board, boolean turn, int alpha, int beta) {
 		Player player = new Player();
 		int hang = 0;
 		int cot = 0;
 		boolean isTimThay = false;
+		int tempmin = Integer.MIN_VALUE;
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board.length; j++) {
+				if (board[i][j] == 0) {
+					int[][] cloneboard = clone(board);
+					count++;
+					cloneboard[i][j] = 2;
 
-		if (depth == 0) {
-			int sc = 0;
-			int max = getScore(board, false, player) - getScore(board, true, player);
-			for (int i = 0; i < board.length; i++) {
-				for (int j = 0; j < board.length; j++) {
-					if (board[i][j] == 0) {
-						int[][] cloneboard = clone(board);
-						cloneboard[i][j] = 1;
-						sc = getScore(cloneboard, false, player) - getScore(cloneboard, true, player);
-						if (max < sc) {
-							max = sc;
-							hang = i;
-							cot = j;
-							isTimThay = true;
+					int min = checkMax(depth - 1, cloneboard, false, alpha, beta);
+					if (tempmin < min) 
+						tempmin = min;
+//						 = tempmin;
+						hang = i;
+						cot = j;
+						isTimThay = true;
+
+						if (tempmin < alpha) {
 							setPoint(new Point(hang, cot));
 						}
-					}
+						beta = Math.min(beta, tempmin);
+					
 				}
-			}
-			if (isTimThay == true) {
-				return max;
-			} else {
-				hang = 0;
-				cot = 0;
-			}
-		} else {
-			if (turn == true) { // isCheckMin le
-				int tempmin = Integer.MIN_VALUE;
-				int sc = -1;
-				for (int i = 0; i < board.length; i++) {
-					for (int j = 0; j < board.length; j++) {
-						if (board[i][j] == 0) {
-							int[][] cloneboard = clone(board);
-							cloneboard[i][j] = 2;
-
-							int min = minimax(depth - 1, cloneboard, true, alpha, beta);
-							if (tempmin < min) {
-								tempmin = min;
-								sc = tempmin;
-								hang = i;
-								cot = j;
-								isTimThay = true;
-								if (sc <= alpha) {
-									setPoint(new Point(hang, cot));
-								}
-								beta = Math.min(beta, sc);
-							}
-						}
-					}
-				}
-				return beta;
-
-			} else { // is CheckMax chan
-				int tempmax = Integer.MAX_VALUE;
-				int sc = -1;
-				for (int i = 0; i < board.length; i++) {
-					for (int j = 0; j < board.length; j++) {
-						if (board[i][j] == 0) {
-							int[][] cloneboard = clone(board);
-							cloneboard[i][j] = 1;
-							int max = minimax(depth - 1, cloneboard, false, alpha, beta);
-							if (tempmax > max) {
-								tempmax = max;
-								sc = tempmax;
-								hang = i;
-								cot = j;
-								isTimThay = true;
-								if (sc >= beta) {
-									setPoint(new Point(hang, cot));
-								}
-								alpha = Math.max(alpha, sc);
-							}
-						}
-					}
-				}
-				return alpha;
-
 			}
 		}
-		return -1;
+		return beta;
+
+//			}
+//		}
+//		return beta;
+	}
+
+	public int checkMax(int depth, int[][] board, boolean turn, int alpha, int beta) {
+		int tempmax = Integer.MAX_VALUE;
+		int sc = -1;
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board.length; j++) {
+				if (board[i][j] == 0) {
+					int[][] cloneboard = clone(board);
+					count++;
+					cloneboard[i][j] = 1;
+					int max = minimax(depth - 1, cloneboard, false, alpha, beta);
+					System.out.println("max: " + max);
+					if (tempmax > max) {
+						tempmax = max;
+						sc = tempmax;
+
+						if (sc >= beta) {
+							System.out.println("beta checkMax: " + beta);
+							setPoint(new Point(i, j));
+						}
+					}
+					alpha = Math.max(alpha, sc);
+
+				}
+			}
+		}
+		return alpha;
 	}
 
 	public void alphabeta(int alpha, int beta, int depth, int[][] board, int player) {
-		if (depth % 3 == 0 || depth != 0 || depth != 1) {
+		if (depth%3 == 0) {
 			minimax(depth, board, true, alpha, beta);
+//			player = 1;
 		} else { // checkMax
-			minimax(depth, board, false, alpha, beta);
+			checkMax(depth, board, false, alpha, beta);
 		}
+		System.out.println("count: " + count);
 	}
 
 	public Point moveOn(int player) {
-		//alpha xet node max, beta xet node min
-		alphabeta(-10000, 10000, 2, board, player);
+		// alpha xet node max, beta xet node min
+		alphabeta(-10000, 10000, 1, board, player);
 		Point temp = getPoint();
 		if (temp != null) {
 			ai_x = temp.x;
